@@ -80,17 +80,27 @@ const AddPersonForm = () => {
 	const onSubmit = async (data) => {
 		const url = isEdit
 			? `${process.env.REACT_APP_API_URL}/person/${location.state.id}`
-			: process.env.REACT_APP_API_URL + "/person";
+			: process.env.REACT_APP_API_URL + "/person" + `?name=${data.name}&position=${data.position}&department=${data.department}&phoneNumber=${data.phoneNumber}&gender=${data.gender}&email=${data.email}&comment=${data.comment}`;
 
 		const method = isEdit ? "PATCH" : "POST";
 
-		const response = await fetchData(url, {
-			method: method,
-			headers: {
-				"Content-Type": "application/json;charset=utf-8",
-			},
-			body: JSON.stringify(data),
-		});
+		let options = {}
+
+		if (method === "PATCH") {
+			options = {
+				method: method,
+				headers: {
+					"Content-Type": "application/json;charset=utf-8",
+				},
+				body: JSON.stringify(data),
+			}
+		} else {
+			options = {
+				method: method
+			}
+		}
+
+		const response = await fetchData(url, options);
 		if (response?.data) {
 			handleOpen("success", response.status);
 		}
